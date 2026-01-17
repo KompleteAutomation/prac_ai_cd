@@ -64,6 +64,13 @@ pipeline {
                 bat 'node quality-tools\\dashboard\\generate-dashboard.js'
             }
         }
+
+
+         stage('Build Failure Clusters') {
+            steps {
+                bat 'node quality-tools\\clustering\\build-failure-clusters.js'
+            }
+        }
     }
 
     post {
