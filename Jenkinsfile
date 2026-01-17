@@ -78,6 +78,8 @@ pipeline {
             archiveArtifacts artifacts: 'test-results/**', fingerprint: true
             archiveArtifacts artifacts: 'playwright-report/**', fingerprint: true
             archiveArtifacts artifacts: 'quality-dashboard/**', fingerprint: true
+            archiveArtifacts artifacts: 'quality-data-clusters/**', fingerprint: true
+
         }
 
         failure {
