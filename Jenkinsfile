@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         BASE_URL = "https://aiglobal.space"
-        WORKERS = "1"
+        WORKERS = "2"
     
     }
 
