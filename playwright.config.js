@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
 import {installLocatorInterceptor} from './playwright/healing/locatorInterceptor.js';
+import { parse } from 'node:path';
 
 /**
  * Read environment variables from file.
@@ -23,7 +24,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.WORKERS ? parseInt(process.env.WORKERS) : 3,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter:
   [
