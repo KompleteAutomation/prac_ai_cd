@@ -5,7 +5,8 @@ pipeline {
         BASE_URL = 'https://aiglobal.space'
         WORKERS = '1'
         OPENAI_API_KEY = credentials('OPENAI_API_KEY')
-    }
+        SETUP_MODE = 'api'
+    
 
     options {
         timestamps()
@@ -164,10 +165,19 @@ pipeline {
                 bat 'node quality-tools\\presentation\\generate-trends-roi.js'
             }
         }
+
+        // ---------------------------
+        // 15. Generate Dashboard
+        // ---------------------------
+        stage('Generate Dashboard') {
+            steps {
+                bat 'node quality-tools\\dashboard\\generate-dashboard.js'
+            }
+        }
     }
 
     // ---------------------------
-    // 15. Archive Everything for History
+    // 16. Archive Everything for History
     // ---------------------------
     post {
         always {
