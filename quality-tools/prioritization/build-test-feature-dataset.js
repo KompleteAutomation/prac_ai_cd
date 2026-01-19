@@ -68,17 +68,16 @@ files.forEach(file => {
 // ---------- Write Feature CSV ----------
 let csv = 'TestName,PassRate,FlakyRate,AvgDuration,LastOutcome,FailureClusterCount,ChangedModuleHit\n';
 
-Object.keys(testStats).forEach(test => {
-  const t = testStats[test];
+Object.keys(testStats).forEach(testName => {
+  const t = testStats[testName];
   const passRate = (t.passed / t.total).toFixed(2);
   const flakyRate = (t.flaky / t.total).toFixed(2);
   const avgDuration = Math.round(t.durations.reduce((a,b)=>a+b,0) / t.durations.length);
   const lastOutcome = t.lastOutcome;
-  const clusterCount = clusterMap[test] || 0;
+  const clusterCount = clusterMap[testName] || 0;
+  const changedHit = changedFiles.some(f => f.includes(testName)) ? 'YES' : 'NO';
 
-  const changedHit = changedFiles.some(f => f.includes(test)) ? 'YES' : 'NO';
-
-  csv += `${test},${passRate},${flakyRate},${avgDuration},${lastOutcome},${clusterCount},${changedHit}\n`;
+  csv += `${testName},${passRate},${flakyRate},${avgDuration},${lastOutcome},${clusterCount},${changedHit}\n`;
 });
 
 fs.writeFileSync(OUTPUT_FILE, csv);
