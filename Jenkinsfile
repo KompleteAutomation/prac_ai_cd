@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         BASE_URL = 'https://aiglobal.space'
-        WORKERS = '2'
+        WORKERS = '1'
         OPENAI_API_KEY = credentials('OPENAI_API_KEY')
         SETUP_MODE = 'api'
     }
@@ -37,7 +37,8 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'npx playwright test --config=playwright.config.js --workers=%WORKERS%'
+                        bat 'npx playwright test --config=playwright.config.js --workers=%WORKERS% --project=chromium $(type quality-ml-results\\prioritized-tests.txt)'
+'
                     }
                     catch (err) {
                         echo '❌ Playwright tests failed — marking build UNSTABLE but continuing'

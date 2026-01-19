@@ -34,3 +34,7 @@ scored.forEach(s => csv += `${s.name},${s.score},"${s.reason}"\n`);
 
 fs.writeFileSync(OUTPUT_FILE, csv);
 console.log("Priority scoring generated →", OUTPUT_FILE);
+
+
+let list = scored.map(s => `tests/${s.name}`).join('\n');
+fs.writeFileSync('quality-ml-results/prioritized-tests.txt', list);
