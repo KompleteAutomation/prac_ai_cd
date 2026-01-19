@@ -38,7 +38,7 @@ pipeline {
                 script {
                     try {
                         bat 'npx playwright test --config=playwright.config.js --workers=%WORKERS% --project=chromium $(type quality-ml-results\\prioritized-tests.txt)'
-'
+
                     }
                     catch (err) {
                         echo '❌ Playwright tests failed — marking build UNSTABLE but continuing'
