@@ -66,12 +66,12 @@ function generateHtml(runs, recurringDefects) {
   return `
 <html>
 <head>
-<title>Quality Trends & ROI</title>
+<title>Quality Trends & Automation ROI</title>
 <style>
-body { font-family: Arial; margin:30px; }
+body { font-family: Arial; margin:30px; background:#f4f6f7;}
 h1 { color:#2c3e50; }
-.chart { margin-bottom:40px; }
-.bar { display:inline-block; margin-right:4px; background:#3498db; vertical-align:bottom; }
+.chart { margin-bottom:40px; padding:15px; background:white; border-radius:8px; box-shadow:0 0 5px #ccc;}
+.bar { display:inline-block; margin-right:6px; vertical-align:bottom; border-radius:3px;}
 .label { font-size:12px; }
 </style>
 </head>
@@ -79,30 +79,40 @@ h1 { color:#2c3e50; }
 
 <h1>Quality Trends & Automation ROI</h1>
 
+<div class="chart">
 <h3>Critical Pass Rate Trend (%)</h3>
-<div class="chart">
-${criticalRates.map((v,i)=> `<div class="bar" style="height:${v}px;width:20px" title="Run ${runLabels[i]}: ${v}%"></div>`).join('')}
+${criticalRates.map((v,i)=> 
+  `<div class="bar" style="height:${Math.max(v,20)}px;width:24px;background:#3498db" title="Run ${runLabels[i]} : ${v}%"></div>`
+).join('')}
 </div>
 
+<div class="chart">
 <h3>Execution Duration Trend (ms)</h3>
-<div class="chart">
-${durations.map((v,i)=> `<div class="bar" style="height:${Math.round(v/50)}px;width:20px;background:#9b59b6" title="Run ${runLabels[i]}: ${v} ms"></div>`).join('')}
+${durations.map((v,i)=> 
+  `<div class="bar" style="height:${Math.max(Math.round(v/20),20)}px;width:24px;background:#9b59b6" title="Run ${runLabels[i]} : ${v} ms"></div>`
+).join('')}
 </div>
 
+<div class="chart">
 <h3>Flaky Test Trend</h3>
-<div class="chart">
-${flakyCounts.map((v,i)=> `<div class="bar" style="height:${v*20}px;width:20px;background:#f39c12" title="Run ${runLabels[i]}: ${v} flaky"></div>`).join('')}
+${flakyCounts.map((v,i)=> 
+  `<div class="bar" style="height:${Math.max(v*25,20)}px;width:24px;background:#f39c12" title="Run ${runLabels[i]} : ${v} flaky tests"></div>`
+).join('')}
 </div>
 
+<div class="chart">
 <h3>Recurring Defect Clusters: ${recurringDefects}</h3>
+</div>
 
-<p><b>ROI Interpretation:</b></p>
+<div class="chart">
+<b>ROI Interpretation:</b>
 <ul>
-<li>Rising critical pass rate → improved release stability</li>
-<li>Reducing flaky trend → higher automation trust</li>
-<li>Stable or falling defect clusters → better product quality</li>
-<li>Execution time trend → CI efficiency tracking</li>
+<li>Increasing blue bars → improved release stability</li>
+<li>Lower orange bars → higher automation trust</li>
+<li>Stable or decreasing defect clusters → better product quality</li>
+<li>Purple duration trend → CI performance tracking</li>
 </ul>
+</div>
 
 </body>
 </html>
