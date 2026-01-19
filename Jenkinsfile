@@ -80,6 +80,12 @@ pipeline {
             steps { bat 'node quality-tools\\normalize-playwright\\normalize.js' }
         }
 
+        stage('Validate Normalized Data') {
+            steps {
+                bat 'node quality-tools\\validation\\validate-normalized-data.js'
+            }
+        }
+
         stage('Generate Run Metrics Table') {
             steps { bat 'node quality-tools\\presentation\\generate-run-metrics-table.js' }
         }
