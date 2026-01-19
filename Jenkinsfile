@@ -80,16 +80,20 @@ pipeline {
             steps {
                 bat 'node quality-tools\\presentation\\generate-executive-summary.js'
             }
-
-        }   
+        }
 
             stage('Generate RCA Dashboard') {
                 steps {
                     bat 'node quality-tools\\presentation\\generate-rca-dashboard.js'
                 }
             }
-    
-}
+
+            stage('Generate Trends & ROI Dashboard') {
+            steps {
+                bat 'node quality-tools\\presentation\\generate-trends-roi.js'
+            }
+            }
+    }
 
     post {
         always {
