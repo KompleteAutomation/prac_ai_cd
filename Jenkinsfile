@@ -38,7 +38,7 @@ pipeline {
                     try {
                         bat '''
                 echo Running ML-prioritized tests...
-                for /f %%t in (quality-ml-results\prioritized-tests.txt) do (
+                for /f %%t in (quality-ml-results\\prioritized-tests.txt) do (
                     echo Executing %%t
                     npx playwright test %%t --config=playwright.config.js --workers=%WORKERS%
                 )
