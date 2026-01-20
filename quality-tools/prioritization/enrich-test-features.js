@@ -1,6 +1,6 @@
 /**
  * Build ML-ready feature dataset from normalized Playwright CSVs
- * Ensures no missing / NaN values
+ * Correctly maps cluster data from failure clusters.json
  */
 
 const fs = require('fs');
@@ -12,14 +12,29 @@ const outputDir = path.join(process.cwd(), 'quality-ml-dataset');
 
 if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
 
+// --------------------
+// Load Failure Clusters
+// --------------------
 let clusterMap = {};
+
 if (fs.existsSync(clusterFile)) {
   const clusters = JSON.parse(fs.readFileSync(clusterFile, 'utf-8'));
+
   clusters.forEach(c => {
-    c.tests.forEach(t => clusterMap[t] = c.clusterId);
+    if (!c.failures) return;
+    c.failures.forEach(f => {
+      if (f.testName) {
+        clusterMap[f.testName] = c.clusterId;
+      }
+    });
   });
 }
 
+console.log(`🔗 Loaded ${Object.keys(clusterMap).length} clustered tests`);
+
+// --------------------
+// Load Normalized CSVs
+// --------------------
 const files = fs.readdirSync(normalizedDir).filter(f => f.endsWith('.csv'));
 
 let testStats = {};
@@ -52,7 +67,7 @@ files.forEach(file => {
         totalRetries: 0,
         lastOutcome: status,
         clusterId: clusterMap[testName] || 'none',
-        businessRisk: 3   // default medium risk
+        businessRisk: 3
       };
     }
 
@@ -67,6 +82,9 @@ files.forEach(file => {
   });
 });
 
+// --------------------
+// Write Feature Dataset
+// --------------------
 let csv = 'testName,file,totalRuns,passCount,failCount,failureRate,avgDuration,retryRate,lastOutcome,clusterId,businessRisk\n';
 
 Object.values(testStats).forEach(t => {
@@ -79,5 +97,5 @@ Object.values(testStats).forEach(t => {
 
 fs.writeFileSync(path.join(outputDir, 'test-features.csv'), csv);
 
-console.log(`✅ Feature dataset generated: ${outputDir}\\test-features.csv`);
+console.log(`✅ Feature dataset generated: quality-ml-dataset/test-features.csv`);
 console.log(`📊 Tests processed: ${Object.keys(testStats).length}`);
