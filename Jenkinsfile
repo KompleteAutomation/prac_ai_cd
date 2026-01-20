@@ -114,8 +114,12 @@ pipeline {
             steps { bat 'node quality-tools\\presentation\\generate-trends-roi.js' }
         }
 
+        // stage('Build ML Feature Dataset') {
+        //     steps { bat 'node quality-tools\\prioritization\\build-test-feature-dataset.js' }
+        // }
+
         stage('Build ML Feature Dataset') {
-            steps { bat 'node quality-tools\\prioritization\\build-test-feature-dataset.js' }
+            steps { bat 'node quality-tools\\prioritization\\enrich-test-features.js' }
         }
 
         stage('Generate Test Priority Scores') {
@@ -140,7 +144,6 @@ pipeline {
             archiveArtifacts artifacts: 'quality-ml-dataset/**', fingerprint: true
             archiveArtifacts artifacts: 'quality-ml-results/**', fingerprint: true
             archiveArtifacts artifacts: 'quality-presentation/test-priority-summary.html', fingerprint: true
-        
         }
 
         success {
