@@ -1,6 +1,7 @@
 /**
- * Normalize Playwright JSON reports into CSV
- * Safe against missing fields
+ * FINAL Playwright JSON → Clean CSV Normalizer
+ * Produces exactly 8 columns:
+ * run,testId,testName,file,status,duration,retries,error
  */
 
 const fs = require('fs');
@@ -18,13 +19,7 @@ files.forEach(file => {
   const raw = fs.readFileSync(path.join(inputDir, file), 'utf-8');
   const json = JSON.parse(raw);
 
-  // Playwright JSON reporter structure (v1.57+)
   const tests = json.tests || [];
-
-  if (!tests.length) {
-    console.log(`⚠ No tests found in ${file}, skipping`);
-    return;
-  }
 
   let rows = [];
 
@@ -37,20 +32,17 @@ files.forEach(file => {
       status: t.outcome || '',
       duration: t.duration || 0,
       retries: t.retry || 0,
-      error: t.errors && t.errors.length > 0 ? t.errors[0].message : ''
+      error: (t.errors && t.errors.length > 0) ? t.errors[0].message : ''
     });
   });
 
-  const csvHeader = 'run,testId,testName,file,status,duration,retries,error\n';
+  const header = 'run,testId,testName,file,status,duration,retries,error\n';
 
-  const csvBody = rows.map(r =>
-    `${r.run},${r.testId},${r.testName},${r.file},${r.status},${r.duration},${r.retries},${r.error.replace(/"/g, '')}`
+  const body = rows.map(r =>
+    `"${r.run}","${r.testId}","${r.testName}","${r.file}","${r.status}","${r.duration}","${r.retries}","${r.error.replace(/"/g,"'")}"`
   ).join('\n');
 
-  fs.writeFileSync(
-    path.join(outputDir, `run_${runId}.csv`),
-    csvHeader + csvBody
-  );
+  fs.writeFileSync(path.join(outputDir, `run_${runId}.csv`), header + body);
 
   console.log(`✅ Normalized run ${runId}`);
 });
