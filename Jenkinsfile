@@ -32,25 +32,25 @@ pipeline {
             }
         }
 
-        // stage('Run Playwright Tests') {
-        //     steps {
-        //         script {
-        //             try {
-        //                 bat '''
-        //         echo Running ML-prioritized tests...
-        //         for /f %%t in (quality-ml-results\prioritized-tests.txt) do (
-        //             echo Executing %%t
-        //             npx playwright test %%t --config=playwright.config.js --workers=%WORKERS%
-        //         )
-        //         '''
-        //             }
-        //     catch (err) {
-        //                 echo '❌ Playwright tests failed — marking build UNSTABLE but continuing for reporting'
-        //                 currentBuild.result = 'UNSTABLE'
-        //     }
-        //         }
-        //     }
-        // }
+        stage('Run Playwright Tests') {
+            steps {
+                script {
+                    try {
+                        bat '''
+                echo Running ML-prioritized tests...
+                for /f %%t in (quality-ml-results\prioritized-tests.txt) do (
+                    echo Executing %%t
+                    npx playwright test %%t --config=playwright.config.js --workers=%WORKERS%
+                )
+                '''
+                    }
+            catch (err) {
+                        echo '❌ Playwright tests failed — marking build UNSTABLE but continuing for reporting'
+                        currentBuild.result = 'UNSTABLE'
+            }
+                }
+            }
+        }
 
         stage('Store Execution Data') {
             steps {
